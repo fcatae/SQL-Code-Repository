@@ -1,4 +1,4 @@
-USE master
+-- USE [database]
 GO
 IF OBJECT_ID('tempdb..#spBlockerPfe') IS NOT NULL
 	DROP PROCEDURE #spBlockerPfe
@@ -20,7 +20,7 @@ SELECT @startDate = GETDATE(), @prevDate = '1900-01-01', @step = 0
 
 SET @endDate = DATEADD(HOUR,@timespan,GETDATE())
 
-PRINT 'BLOCKER_PFE_SCRIPT_DENALI Script v11.0.14 (SQL2012)'
+PRINT 'BLOCKER_PFE_SCRIPT_AZURE Script v12.0.00 (SQL Azure)'
 PRINT ''
 PRINT '  SQL Instance:       ' + @@SERVERNAME
 PRINT '  SQL Version:        ' + CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR) + ' (' + CAST(SERVERPROPERTY('ProductLevel') AS VARCHAR) + ')'
@@ -110,13 +110,13 @@ PRINT ''
 PRINT 'GeneralInformation'
 PRINT REPLICATE('-',100)
 PRINT 'ServerName: ' + @@SERVERNAME
-PRINT 'PhysicalName: ' + CAST(SERVERPROPERTY('ComputerNamePhysicalNetBIOS') AS VARCHAR)
+--PRINT 'PhysicalName: ' + CAST(SERVERPROPERTY('ComputerNamePhysicalNetBIOS') AS VARCHAR)
 PRINT 'ProductVersion: ' + CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR)
 PRINT 'ProductLevel: ' + CAST(SERVERPROPERTY('ProductLevel') AS VARCHAR)
 PRINT 'ResourceVersion: ' + CAST(SERVERPROPERTY('ResourceVersion') AS VARCHAR)
 PRINT 'ResourceLastUpdateDateTime: ' + CAST(SERVERPROPERTY('ResourceLastUpdateDateTime') AS VARCHAR)
 PRINT 'Edition: ' + CAST(SERVERPROPERTY('Edition') AS VARCHAR)
-PRINT 'ProcessId: ' + CAST(SERVERPROPERTY('ProcessId') AS VARCHAR)
+--PRINT 'ProcessId: ' + CAST(SERVERPROPERTY('ProcessId') AS VARCHAR)
 PRINT 'SessionId: ' + CAST(@@SPID AS VARCHAR)
 PRINT 'Collation: ' + CAST(SERVERPROPERTY('Collation') AS VARCHAR(32))
 PRINT ''
@@ -128,39 +128,39 @@ PRINT 'BLOCKER_PFE_BEGIN @@version'
 SELECT @@version AS 'version'
 PRINT 'BLOCKER_PFE_END @@version ' + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN xp_msver'
-EXEC xp_msver
-PRINT 'BLOCKER_PFE_END xp_msver ' + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN xp_msver'
+--EXEC xp_msver
+--PRINT 'BLOCKER_PFE_END xp_msver ' + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_sys_info'
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_sys_info'
 
-SELECT 
-	sqlserver_start_time, -- 2008
-	cpu_count, hyperthread_ratio, 
-	physical_memory_kb/1024 AS 'physical_memory(MB)', --SQL2012
-	--bpool_committed*8/1024 AS 'buffer_pool(MB)',  --SQL2012
-	--bpool_commit_target*8/1024 AS 'buffer_pool_target(MB)', --SQL2012
-	--bpool_visible*8/1024 AS 'buffer_visible(MB)',  --SQL2012
-	--virtual_memory_in_bytes/1024/1024 AS 'virtual_memory(MB)', --SQL2012
-	max_workers_count, scheduler_count
-FROM sys.dm_os_sys_info
+--SELECT 
+--	sqlserver_start_time, -- 2008
+--	cpu_count, hyperthread_ratio, 
+--	physical_memory_kb/1024 AS 'physical_memory(MB)', --SQL2012
+--	--bpool_committed*8/1024 AS 'buffer_pool(MB)',  --SQL2012
+--	--bpool_commit_target*8/1024 AS 'buffer_pool_target(MB)', --SQL2012
+--	--bpool_visible*8/1024 AS 'buffer_visible(MB)',  --SQL2012
+--	--virtual_memory_in_bytes/1024/1024 AS 'virtual_memory(MB)', --SQL2012
+--	max_workers_count, scheduler_count
+--FROM sys.dm_os_sys_info
 
-PRINT 'BLOCKER_PFE_END sys.dm_os_sys_info '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT 'BLOCKER_PFE_END sys.dm_os_sys_info '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_cluster_nodes'
-SELECT NodeName FROM sys.dm_os_cluster_nodes 
-PRINT 'BLOCKER_PFE_END sys.dm_os_cluster_nodes '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_cluster_nodes'
+--SELECT NodeName FROM sys.dm_os_cluster_nodes 
+--PRINT 'BLOCKER_PFE_END sys.dm_os_cluster_nodes '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_io_cluster_shared_drives'
-SELECT DriveName FROM sys.dm_io_cluster_shared_drives 
-PRINT 'BLOCKER_PFE_END sys.dm_io_cluster_shared_drives '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_io_cluster_shared_drives'
+--SELECT DriveName FROM sys.dm_io_cluster_shared_drives 
+--PRINT 'BLOCKER_PFE_END sys.dm_io_cluster_shared_drives '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
  
 SET @time = GETDATE()
 PRINT ''
@@ -207,50 +207,50 @@ d.database_id, d.name, state_desc=CAST(d.state_desc AS VARCHAR(20)), user_access
 FROM sys.databases d
 PRINT 'BLOCKER_PFE_END sys.databases '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.master_files'
--- VIEW ANY DEFINITION
-SELECT 
-	d.database_id, d.file_id, state_desc = CAST(d.state_desc AS VARCHAR(16)), type_desc=CAST(d.type_desc AS VARCHAR(16)), d.physical_name, d.file_guid, d.data_space_id, d.name, d.size, d.max_size, d.growth, d.is_media_read_only, d.is_read_only, d.is_sparse, d.is_percent_growth 
-FROM sys.master_files d
-PRINT 'BLOCKER_PFE_END sys.master_files '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.master_files'
+---- VIEW ANY DEFINITION
+--SELECT 
+--	d.database_id, d.file_id, state_desc = CAST(d.state_desc AS VARCHAR(16)), type_desc=CAST(d.type_desc AS VARCHAR(16)), d.physical_name, d.file_guid, d.data_space_id, d.name, d.size, d.max_size, d.growth, d.is_media_read_only, d.is_read_only, d.is_sparse, d.is_percent_growth 
+--FROM sys.master_files d
+--PRINT 'BLOCKER_PFE_END sys.master_files '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.master_files[Size]'
--- VIEW ANY DEFINITION
-SELECT 
-	d.database_id, type_desc=CAST(d.type_desc AS VARCHAR(16)), 
-	CAST(d.size AS BIGINT)*8/1024 AS 'Size(MB)', 
-	CASE d.is_percent_growth 
-		WHEN 0 THEN CAST(d.growth AS INT)*8/1024
-		WHEN 1 THEN CAST(d.growth AS INT)*CAST(d.size AS INT)/100*8/1024
-	END AS 'Growth(MB)',
-	CASE d.is_percent_growth 
-		WHEN 0 THEN CAST( (100*d.growth/d.size) AS SMALLINT )
-		WHEN 1 THEN CAST( d.growth AS SMALLINT )
-	END AS 'Growth(perc)',	
-	d.physical_name
-FROM sys.master_files d
-ORDER BY d.physical_name
-PRINT 'BLOCKER_PFE_END sys.master_files[Size] '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.master_files[Size]'
+---- VIEW ANY DEFINITION
+--SELECT 
+--	d.database_id, type_desc=CAST(d.type_desc AS VARCHAR(16)), 
+--	CAST(d.size AS BIGINT)*8/1024 AS 'Size(MB)', 
+--	CASE d.is_percent_growth 
+--		WHEN 0 THEN CAST(d.growth AS INT)*8/1024
+--		WHEN 1 THEN CAST(d.growth AS INT)*CAST(d.size AS INT)/100*8/1024
+--	END AS 'Growth(MB)',
+--	CASE d.is_percent_growth 
+--		WHEN 0 THEN CAST( (100*d.growth/d.size) AS SMALLINT )
+--		WHEN 1 THEN CAST( d.growth AS SMALLINT )
+--	END AS 'Growth(perc)',	
+--	d.physical_name
+--FROM sys.master_files d
+--ORDER BY d.physical_name
+--PRINT 'BLOCKER_PFE_END sys.master_files[Size] '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.traces'
--- VIEW ANY DEFINITION
-SELECT 
-	t.id, t.status, t.path, t.max_size, t.stop_time, t.max_files, t.is_rowset, t.is_rollover, t.is_shutdown, t.is_default, t.buffer_count, t.buffer_size, t.file_position, t.reader_spid, t.start_time, t.last_event_time, t.event_count, t.dropped_event_count 
-FROM sys.traces t
-PRINT 'BLOCKER_PFE_END sys.traces '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.traces'
+---- VIEW ANY DEFINITION
+--SELECT 
+--	t.id, t.status, t.path, t.max_size, t.stop_time, t.max_files, t.is_rowset, t.is_rollover, t.is_shutdown, t.is_default, t.buffer_count, t.buffer_size, t.file_position, t.reader_spid, t.start_time, t.last_event_time, t.event_count, t.dropped_event_count 
+--FROM sys.traces t
+--PRINT 'BLOCKER_PFE_END sys.traces '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-TRUNCATE TABLE #filehandle
+--TRUNCATE TABLE #filehandle
 
-INSERT #filehandle(file_handle, database_id, file_id, filename)
-SELECT vfs.file_handle, vfs.database_id, vfs.file_id, f.physical_name FROM sys.dm_io_virtual_file_stats(-1,-1) vfs
-	LEFT JOIN sys.master_files f ON vfs.database_id = f.database_id AND vfs.file_id = f.file_id
-	WHERE file_handle<>0
+--INSERT #filehandle(file_handle, database_id, file_id, filename)
+--SELECT vfs.file_handle, vfs.database_id, vfs.file_id, f.physical_name FROM sys.dm_io_virtual_file_stats(-1,-1) vfs
+--	LEFT JOIN sys.master_files f ON vfs.database_id = f.database_id AND vfs.file_id = f.file_id
+--	WHERE file_handle<>0
 	
 SET @time = GETDATE()
 PRINT ''
@@ -258,13 +258,15 @@ PRINT 'BLOCKER_PFE_BEGIN sys.dm_exec_sessions'
 
 SELECT 
 	s.session_id, 
-	s.login_time,
-	s.status, 
-	s.cpu_time, s.memory_usage, s.total_scheduled_time, s.total_elapsed_time, 
-	s.last_request_start_time, s.last_request_end_time, 
-	s.reads, s.writes, s.logical_reads, 
-	s.row_count, 
-	s.prev_error
+	s.group_id, 
+	CAST(s.status AS VARCHAR(16)) AS 'status',
+	CAST(s.host_name AS VARCHAR(20)) AS 'host_name', 
+	CAST(s.login_name AS VARCHAR(32)) AS 'login_name', 
+	CAST(s.program_name AS VARCHAR(64)) AS 'program_name', 
+	s.host_process_id, 
+	CAST(s.original_login_name AS VARCHAR(32)) AS 'original_login_name', 
+	s.client_interface_name, s.client_version, 
+	s.login_time
 FROM sys.dm_exec_sessions s 
 
 PRINT 'BLOCKER_PFE_END sys.dm_exec_sessions '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
@@ -289,9 +291,10 @@ SELECT
 	c.client_net_address, c.client_tcp_port, 
 	CAST(c.most_recent_sql_handle AS VARBINARY(26)) AS 'most_recent_sql_handle', 
 	c.net_packet_size, c.encrypt_option,
-	c.connect_time, s.login_time
+	c.connect_time, 
+	s.login_time
 FROM sys.dm_exec_connections c left join sys.dm_exec_sessions s on c.session_id = s.session_id
-	
+
 PRINT 'BLOCKER_PFE_END sys.dm_exec_connections/sessions '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 	
 GO
@@ -325,7 +328,7 @@ SELECT
 	req.statement_start_offset AS 'stmt_start', req.statement_end_offset AS 'stmt_end', 
 	req.query_hash, req.query_plan_hash
 FROM sys.dm_exec_requests req
-WHERE group_id > 1 AND session_id<>@@SPID -- KATMAI (SQL2008)
+WHERE session_id<>@@SPID  --group_id > 1 AND session_id<>@@SPID 
 
 PRINT 'BLOCKER_PFE_END sys.dm_exec_requests '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
@@ -474,43 +477,43 @@ SET LOCK_TIMEOUT 3000
 
 DECLARE @time DATETIME
 
-SELECT @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_resource_governor_resource_pools'
+--SELECT @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_resource_governor_resource_pools'
 
-select 
-wp.pool_id, CAST(wp.name AS VARCHAR(16)) AS 'name', wp.statistics_start_time, 
-wp.total_cpu_usage_ms, wp.cache_memory_kb, wp.compile_memory_kb, wp.used_memgrant_kb, wp.total_memgrant_count, 
-wp.total_memgrant_timeout_count, wp.active_memgrant_count, wp.active_memgrant_kb, wp.memgrant_waiter_count, 
-wp.max_memory_kb, wp.used_memory_kb, wp.target_memory_kb, 
-wp.out_of_memory_count, wp.min_cpu_percent, wp.max_cpu_percent, wp.min_memory_percent, wp.max_memory_percent 
-from sys.dm_resource_governor_resource_pools wp
+--select 
+--wp.pool_id, CAST(wp.name AS VARCHAR(16)) AS 'name', wp.statistics_start_time, 
+--wp.total_cpu_usage_ms, wp.cache_memory_kb, wp.compile_memory_kb, wp.used_memgrant_kb, wp.total_memgrant_count, 
+--wp.total_memgrant_timeout_count, wp.active_memgrant_count, wp.active_memgrant_kb, wp.memgrant_waiter_count, 
+--wp.max_memory_kb, wp.used_memory_kb, wp.target_memory_kb, 
+--wp.out_of_memory_count, wp.min_cpu_percent, wp.max_cpu_percent, wp.min_memory_percent, wp.max_memory_percent 
+--from sys.dm_resource_governor_resource_pools wp
 
-PRINT 'BLOCKER_PFE_END sys.dm_resource_governor_resource_pools '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT 'BLOCKER_PFE_END sys.dm_resource_governor_resource_pools '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SELECT @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_resource_governor_workload_groups'
+--SELECT @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_resource_governor_workload_groups'
 
-SELECT 
-wg.group_id, wg.pool_id, CAST(wg.name AS VARCHAR(16)) AS 'name', 
-wg.active_request_count, wg.queued_request_count, wg.blocked_task_count, wg.active_parallel_thread_count, 
-wg.statistics_start_time, wg.total_request_count, wg.total_queued_request_count, wg.total_cpu_limit_violation_count, 
-wg.total_cpu_usage_ms, 
-wg.total_lock_wait_count, 
-wg.total_lock_wait_time_ms, 
-wg.total_query_optimization_count, 
-wg.total_suboptimal_plan_generation_count, 
-wg.total_reduced_memgrant_count, 
-wg.max_request_cpu_time_ms, 
-wg.max_request_grant_memory_kb, 
-wg.request_max_memory_grant_percent,
-CAST(wg.importance AS VARCHAR(16)) AS 'importance', 
-wg.request_max_cpu_time_sec, wg.group_max_requests, 
-wg.request_memory_grant_timeout_sec, wg.max_dop
-from sys.dm_resource_governor_workload_groups wg
+--SELECT 
+--wg.group_id, wg.pool_id, CAST(wg.name AS VARCHAR(16)) AS 'name', 
+--wg.active_request_count, wg.queued_request_count, wg.blocked_task_count, wg.active_parallel_thread_count, 
+--wg.statistics_start_time, wg.total_request_count, wg.total_queued_request_count, wg.total_cpu_limit_violation_count, 
+--wg.total_cpu_usage_ms, 
+--wg.total_lock_wait_count, 
+--wg.total_lock_wait_time_ms, 
+--wg.total_query_optimization_count, 
+--wg.total_suboptimal_plan_generation_count, 
+--wg.total_reduced_memgrant_count, 
+--wg.max_request_cpu_time_ms, 
+--wg.max_request_grant_memory_kb, 
+--wg.request_max_memory_grant_percent,
+--CAST(wg.importance AS VARCHAR(16)) AS 'importance', 
+--wg.request_max_cpu_time_sec, wg.group_max_requests, 
+--wg.request_memory_grant_timeout_sec, wg.max_dop
+--from sys.dm_resource_governor_workload_groups wg
 
-PRINT 'BLOCKER_PFE_END sys.dm_resource_governor_workload_groups '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT 'BLOCKER_PFE_END sys.dm_resource_governor_workload_groups '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
 SET @time = GETDATE()
 PRINT ''
@@ -553,32 +556,32 @@ WHERE blk.blocking_session_id not in (SELECT session_id FROM cteBlockedSessions)
 PRINT 'BLOCKER_PFE_END sys.dm_os_waiting_tasks[BlockedSessions] '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_sys_memory'
--- SQL 2008
-SELECT 
-s.system_high_memory_signal_state, s.system_low_memory_signal_state, s.available_physical_memory_kb, 
-s.available_page_file_kb, 
-s.system_cache_kb, s.kernel_paged_pool_kb, s.kernel_nonpaged_pool_kb, 
-s.total_physical_memory_kb, 
-s.total_page_file_kb
-FROM sys.dm_os_sys_memory s
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_sys_memory'
+---- SQL 2008
+--SELECT 
+--s.system_high_memory_signal_state, s.system_low_memory_signal_state, s.available_physical_memory_kb, 
+--s.available_page_file_kb, 
+--s.system_cache_kb, s.kernel_paged_pool_kb, s.kernel_nonpaged_pool_kb, 
+--s.total_physical_memory_kb, 
+--s.total_page_file_kb
+--FROM sys.dm_os_sys_memory s
 
-PRINT 'BLOCKER_PFE_END sys.dm_os_sys_memory '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT 'BLOCKER_PFE_END sys.dm_os_sys_memory '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_process_memory'
--- SQL 2008
-SELECT
-p.process_physical_memory_low, p.process_virtual_memory_low,
-p.memory_utilization_percentage AS 'memory_utilization', p.available_commit_limit_kb, p.virtual_address_space_available_kb,
-p.physical_memory_in_use_kb, p.large_page_allocations_kb, p.locked_page_allocations_kb, 
-p.virtual_address_space_reserved_kb, p.virtual_address_space_committed_kb, p.total_virtual_address_space_kb
-FROM sys.dm_os_process_memory p
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_process_memory'
+---- SQL 2008
+--SELECT
+--p.process_physical_memory_low, p.process_virtual_memory_low,
+--p.memory_utilization_percentage AS 'memory_utilization', p.available_commit_limit_kb, p.virtual_address_space_available_kb,
+--p.physical_memory_in_use_kb, p.large_page_allocations_kb, p.locked_page_allocations_kb, 
+--p.virtual_address_space_reserved_kb, p.virtual_address_space_committed_kb, p.total_virtual_address_space_kb
+--FROM sys.dm_os_process_memory p
 
-PRINT 'BLOCKER_PFE_END dm_os_process_memory '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT 'BLOCKER_PFE_END dm_os_process_memory '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
  
 SET @time = GETDATE()
 PRINT ''
@@ -642,37 +645,37 @@ FROM sys.dm_tran_active_snapshot_database_transactions a
 
 PRINT 'BLOCKER_PFE_END sys.dm_tran_active_snapshot_database_transactions '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_exec_requests[System]'
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_exec_requests[System]'
 
-SELECT
-	req.session_id, req.blocking_session_id AS 'blocked', 
-	req.database_id AS db_id, req.command, 
-	req.total_elapsed_time AS 'elapsed_time', req.cpu_time, req.granted_query_memory AS 'granted_memory', req.logical_reads, 
-	req.wait_time, CAST(req.wait_type AS VARCHAR(16)) AS 'wait_type', 
-	req.open_transaction_count AS 'tran_count', 
-	req.reads, req.writes,  
-	req.start_time, req.status, req.connection_id, 
-	req.transaction_id, req.task_address, req.request_id
-FROM sys.dm_exec_requests req
-WHERE group_id = 1
+--SELECT
+--	req.session_id, req.blocking_session_id AS 'blocked', 
+--	req.database_id AS db_id, req.command, 
+--	req.total_elapsed_time AS 'elapsed_time', req.cpu_time, req.granted_query_memory AS 'granted_memory', req.logical_reads, 
+--	req.wait_time, CAST(req.wait_type AS VARCHAR(16)) AS 'wait_type', 
+--	req.open_transaction_count AS 'tran_count', 
+--	req.reads, req.writes,  
+--	req.start_time, req.status, req.connection_id, 
+--	req.transaction_id, req.task_address, req.request_id
+--FROM sys.dm_exec_requests req
+--WHERE group_id = 1
 
-PRINT 'BLOCKER_PFE_END sys.dm_exec_requests[System] '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT 'BLOCKER_PFE_END sys.dm_exec_requests[System] '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN dm_os_tasks[System]'
-SELECT
-t.task_address, t.session_id, t.request_id, t.exec_context_id AS 'ecid',
-task_state = CAST(t.task_state AS NVARCHAR(10)), 
-t.context_switches_count AS 'context_switches', t.pending_io_count AS 'pending_io',
-t.scheduler_id, t.worker_address
-FROM sys.dm_os_tasks t
-WHERE worker_address IS NOT NULL
-	AND (session_id IN (SELECT session_id FROM sys.dm_exec_sessions WHERE is_user_process=0) OR session_id IS NULL)
-PRINT 'BLOCKER_PFE_END sys.dm_os_tasks[System] '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN dm_os_tasks[System]'
+--SELECT
+--t.task_address, t.session_id, t.request_id, t.exec_context_id AS 'ecid',
+--task_state = CAST(t.task_state AS NVARCHAR(10)), 
+--t.context_switches_count AS 'context_switches', t.pending_io_count AS 'pending_io',
+--t.scheduler_id, t.worker_address
+--FROM sys.dm_os_tasks t
+--WHERE worker_address IS NOT NULL
+--	AND (session_id IN (SELECT session_id FROM sys.dm_exec_sessions WHERE is_user_process=0) OR session_id IS NULL)
+--PRINT 'BLOCKER_PFE_END sys.dm_os_tasks[System] '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
 
 SET @time = GETDATE()
@@ -753,7 +756,8 @@ select
 from sys.dm_os_wait_stats w where wait_time_ms > 60000
 
 PRINT 'BLOCKER_PFE_END sys.dm_os_wait_stats '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
- 
+
+-- restrito 
 SET @time = GETDATE()
 PRINT ''
 PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_latch_stats'
@@ -765,16 +769,16 @@ from sys.dm_os_latch_stats l where wait_time_ms > 60000
 PRINT 'BLOCKER_PFE_END sys.dm_os_latch_stats '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
 
-SET @time = GETDATE()
-PRINT ''
-PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_spinlock_stats'
+--SET @time = GETDATE()
+--PRINT ''
+--PRINT 'BLOCKER_PFE_BEGIN sys.dm_os_spinlock_stats'
 
-select 
-	CAST(s.name AS VARCHAR(64)) AS 'name', 
-	s.collisions, s.spins, s.spins_per_collision, s.sleep_time, s.backoffs
-from sys.dm_os_spinlock_stats s where sleep_time > 100
+--select 
+--	CAST(s.name AS VARCHAR(64)) AS 'name', 
+--	s.collisions, s.spins, s.spins_per_collision, s.sleep_time, s.backoffs
+--from sys.dm_os_spinlock_stats s where sleep_time > 100
 
-PRINT 'BLOCKER_PFE_END sys.dm_os_spinlock_stats '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
+--PRINT 'BLOCKER_PFE_END sys.dm_os_spinlock_stats '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
  
 
 SET @time = GETDATE()
@@ -851,26 +855,19 @@ PRINT 'BLOCKER_PFE_END DBCC_SQLPERF_LOGSPACE '  + convert(VARCHAR(12), datediff(
 SELECT @time = GETDATE()
 PRINT ''
 PRINT 'BLOCKER_PFE_BEGIN DBCC_OPENTRAN'
-
-DECLARE @dbid INT
-
-DECLARE curDatabases CURSOR FAST_FORWARD FOR
-SELECT database_id FROM sys.databases WHERE state=0
-
-OPEN curDatabases;
-
-FETCH NEXT FROM curDatabases INTO @dbid;
-
-WHILE (@@FETCH_STATUS <> -1)
-BEGIN
-	PRINT ''
-	DBCC OPENTRAN(@dbid)
-	
-	FETCH NEXT FROM curDatabases INTO @dbid
-
-END
-
-DEALLOCATE curDatabases
+DBCC OPENTRAN
+--DECLARE @dbid INT
+--DECLARE curDatabases CURSOR FAST_FORWARD FOR
+--SELECT database_id FROM sys.databases WHERE state=0
+--OPEN curDatabases;
+--FETCH NEXT FROM curDatabases INTO @dbid;
+--WHILE (@@FETCH_STATUS <> -1)
+--BEGIN
+--	PRINT ''
+--	DBCC OPENTRAN(@dbid)
+--	FETCH NEXT FROM curDatabases INTO @dbid
+--END
+--DEALLOCATE curDatabases
 
 PRINT 'BLOCKER_PFE_END DBCC_OPENTRAN '  + convert(VARCHAR(12), datediff(ms,@time,getdate())) 
 
